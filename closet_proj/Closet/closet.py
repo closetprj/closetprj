@@ -57,7 +57,22 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
+def add_watchlistname(gender,email,firstName,lastName,address1,postcode,city,phone):
+    auth_user = session.get("username")
+    if not session['logged_in']:
+        abort(401)
+    db=get_db()
+    db.execute("insert into user_watchlists(username,gender,email,firstName,lastName,address1,postcode,city,phone) values (?,?,?,?,?,?,?,?,?)", [auth_user, gender,email,firstName,lastName,address1,postcode,city,phone])
+    db.commit()
 
+def getnum(watchlistid):
+    auth_user = session.get("username")
+    with sqlite3.connect('user.db') as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT count(productId) FROM kart WHERE watchlist_id = ? and username= ?', [watchlistid,auth_user])
+        noOfItems = cur.fetchone()[0]
+    conn.close()
+    return noOfItems
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
