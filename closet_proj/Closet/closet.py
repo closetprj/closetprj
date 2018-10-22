@@ -65,6 +65,14 @@ def add_watchlistname(gender,email,firstName,lastName,address1,postcode,city,pho
     db.execute("insert into user_watchlists(username,gender,email,firstName,lastName,address1,postcode,city,phone) values (?,?,?,?,?,?,?,?,?)", [auth_user, gender,email,firstName,lastName,address1,postcode,city,phone])
     db.commit()
 
+def get_user_watchlistsname():
+    db = get_db()
+    auth_user = session.get("username")
+    cur = db.execute(
+        'select * from user_watchlists where user_watchlists.username = "%s"' % auth_user)
+    watchlistsname = cur.fetchall()
+    return watchlistsname
+
 def getnum(watchlistid):
     auth_user = session.get("username")
     with sqlite3.connect('user.db') as conn:
@@ -136,6 +144,28 @@ def register():
             return redirect("login")
     return render_template('register.html', error=error)
 
+@app.route('/addwatchlist', methods=['GET', 'POST'])
+def add_watchlist():
+    addwatchlist=1
+    if not session['logged_in']:
+        abort(401)
+    else:
+        if request.method == 'POST':
+            gender=request.form['gender']
+            email = request.form['email']
+            firstName = request.form['firstName']
+            lastName = request.form['lastName']
+            address1 = request.form['address1']
+            postcode = request.form['postcode']
+            city = request.form['city']
+            phone = request.form['phone']
+            #addwatchlist = None
+            add_watchlistname(gender, email, firstName, lastName, address1, postcode, city, phone)
+            flash("add charactor succseess")
+
+    watchlistsname = get_user_watchlistsname()
+    print(watchlistsname)
+    return render_template('dashboard.html',showwatch=1,watchlistsname=watchlistsname, addwathlist=addwatchlist)
 
 
 @app.route('/shutdown')
