@@ -1,0 +1,1 @@
+1. Use arduino to make connection between smart phone and closet.
