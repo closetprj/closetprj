@@ -73,16 +73,24 @@ def get_user_watchlistsname():
     watchlistsname = cur.fetchall()
     return watchlistsname
 
+def get_user_watchlists_id(watchlistname):
+    db = get_db()
+    auth_user = session.get("username")
+
+    cur = db.execute(
+        'select * from user_watchlists where user_watchlists.username = ? and user_watchlists.watchlist_name = ?',[auth_user,watchlistname])
+    watchlistsid = cur.fetchall()
+    return watchlistsid
 
 def delete_watchlist_method(username,watchlistname,watchlistid):
     db = get_db()
     print(username,watchlistname,watchlistid)
     cur = db.execute(
-                     'DELETE FROM user_watchlists and kart where kart.username=? and kart.user_watchlist_id=? and watchlists.username=? and user_watchlists.firstName =?  and user_watchlists.watchlist_id =?',
-                     [username,watchlistid,username,watchlistname,watchlistid])
-                     db.commit()
-                     cur.fetchall()
-                     cur.close()
+        'DELETE FROM user_watchlists and kart where kart.username=? and kart.user_watchlist_id=? and watchlists.username=? and user_watchlists.firstName =?  and user_watchlists.watchlist_id =?',
+        [username,watchlistid,username,watchlistname,watchlistid])
+    db.commit()
+    cur.fetchall()
+    cur.close()
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
