@@ -73,14 +73,16 @@ def get_user_watchlistsname():
     watchlistsname = cur.fetchall()
     return watchlistsname
 
-def getnum(watchlistid):
-    auth_user = session.get("username")
-    with sqlite3.connect('user.db') as conn:
-        cur = conn.cursor()
-        cur.execute('SELECT count(productId) FROM kart WHERE watchlist_id = ? and username= ?', [watchlistid,auth_user])
-        noOfItems = cur.fetchone()[0]
-    conn.close()
-    return noOfItems
+
+def delete_watchlist_method(username,watchlistname,watchlistid):
+    db = get_db()
+    print(username,watchlistname,watchlistid)
+    cur = db.execute(
+                     'DELETE FROM user_watchlists and kart where kart.username=? and kart.user_watchlist_id=? and watchlists.username=? and user_watchlists.firstName =?  and user_watchlists.watchlist_id =?',
+                     [username,watchlistid,username,watchlistname,watchlistid])
+                     db.commit()
+                     cur.fetchall()
+                     cur.close()
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -167,6 +169,17 @@ def add_watchlist():
     print(watchlistsname)
     return render_template('dashboard.html',showwatch=1,watchlistsname=watchlistsname, addwathlist=addwatchlist)
 
+app.route('/deletewatchlist', methods=['GET', 'POST'])
+def delete_watchlist():
+    if not session['logged_in']:
+        abort(401)
+    meg = request.args.get("name").split("_")
+    watchlistname=meg[0]
+    watchlistid=meg[1]
+    delete_watchlist_method(session['username'], watchlistname,watchlistid)
+    flash("delete watch list Success!")
+    watchlistsname = get_user_watchlistsname()
+    return render_template("dashboard.html",showwatch=1, watchlistsname=watchlistsname)
 
 @app.route('/shutdown')
 def shutdown():
