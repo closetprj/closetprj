@@ -22,5 +22,26 @@ conn.execute('''create table user_watchlists(
 		phone TEXT,
   foreign key(username) references users(username)
 )''')
+
+conn.execute('''drop table if exists products;''')
+conn.execute('''CREATE TABLE products
+		(productId INTEGER PRIMARY KEY,
+		name TEXT,
+		price REAL,
+		gender text,
+		description TEXT,
+		image TEXT,
+		stock INTEGER,
+		categoryId INTEGER,
+		state text,
+		FOREIGN KEY(categoryId) REFERENCES categories(categoryId)
+		)''')
+
+conn.execute('''drop table if exists categories;''')
+conn.execute('''CREATE TABLE categories
+		(categoryId INTEGER PRIMARY KEY,
+		type TEXT,
+		gender text
+		)''')
 conn.commit()
 conn.close()

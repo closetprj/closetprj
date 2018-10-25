@@ -104,6 +104,26 @@ def delete_watchlist_method(username,watchlistname,watchlistid):
     cur.fetchall()
     cur.close()
 
+@app.route("/productDescription")
+def productDescription():
+    meg = request.args.get("name").split("_")
+    watchlistname = meg[0]
+    watchlistid = meg[1]
+    productId = meg[3]
+    with sqlite3.connect('user.db') as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE productId = ' + productId)
+        productData = cur.fetchone()
+    conn.close()
+    noOfItems=getnum(watchlistid)
+    return render_template("productDescription.html", data=productData, loggedIn = True, firstName = watchlistname,noOfItems=noOfItems, watchlistid=watchlistid,productId=productId,watchlistname=watchlistname)
+@app.route("/account/profile")
+def profileHome():
+    meg = request.args.get("name").split("_")
+    watchlistname = meg[0]
+    watchlistid = meg[1]
+    return render_template("profileHome.html", watchlistname=watchlistname,watchlistid = watchlistid,loggedIn=True, firstName=watchlistname)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
