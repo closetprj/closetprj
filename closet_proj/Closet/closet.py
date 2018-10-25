@@ -42,6 +42,18 @@ def init_db(schema='schema.sql'):
         db.cursor().executescript(f.read())
     db.commit()
 
+def parse(data):
+    ans = []
+    i = 0
+    while i < len(data):
+        curr = []
+        for j in range(7):
+            if i >= len(data):
+                break
+            curr.append(data[i])
+            i += 1
+        ans.append(curr)
+    return ans
 
 def get_db():
     """Opens a new database connection if there is none yet for the
@@ -198,6 +210,24 @@ def shutdown():
 @app.route("/registerationForm")
 def registrationForm():
         return render_template("add_user.html")
+
+@app.route("/eshopping")
+def eshopping():
+    meg = request.args.get("name").split("_")
+    watchlistname = meg[0]
+    watchlistid= meg[1]
+    with sqlite3.connect('user.db') as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+        itemData = cur.fetchall()
+        cur.execute('SELECT categoryId, type FROM categories')
+        categoryData = cur.fetchall()
+    itemData = parse(itemData)
+    noOfItems=getnum(watchlistid)
+    weather=weather_get()
+    print(noOfItems)
+    return render_template('shoppingpage.html',watchlistname=watchlistname,watchlistid=watchlistid,loggedIn=True, firstName=watchlistname, noOfItems=noOfItems,categoryData=categoryData,itemData=itemData,weather=weather)
+
 
 @app.cli.command('start')
 
