@@ -174,6 +174,35 @@ def addToCart():
                                firstName=watchlistname, noOfItems=noOfItems, categoryDataM=categoryDataM,
                                categoryDataF=categoryDataF, itemData=itemData, tephigh=tephigh,
                                teplow=teplow)
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    meg = request.args.getlist("aa")[0].split('_')
+    watchlistname = meg[0]
+    watchlistid = meg[1]
+    keyword=request.args.getlist("keyword")[0]
+    keyword=str(keyword)
+    with sqlite3.connect('user.db') as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT products.productId, products.name, products.price, products.image FROM products WHERE products.name like '%"+keyword+"%' or products.description like '%"+keyword+"%'")
+        data = cur.fetchall()
+        print(data)
+        print(1)
+        if not data:
+            cur.execute(
+                "SELECT categories.type,categories.categoryId FROM categories WHERE  categories.type like '%"+keyword+"%'")
+            cate = cur.fetchall()
+            print(cate)
+            for row in cate:
+                print(row[1])
+                cur.execute(
+                 "SELECT products.productId, products.name, products.price, products.image FROM products WHERE products.categoryId= ? ",(str(row[1])))
+                data = data+cur.fetchall()
+    conn.close()
+    data = parse(data)
+    num = getnum(watchlistid)
+    return render_template('search.html', data=data, loggedIn=True, firstName=watchlistname, noOfItems=num,
+                           searchName=keyword, watchlistid=watchlistid, watchlistname=watchlistname)
+
 @app.route("/cart")
 def cart():
     auth_user = session.get("username")
