@@ -43,5 +43,16 @@ conn.execute('''CREATE TABLE categories
 		type TEXT,
 		gender text
 		)''')
+
+conn.execute('''CREATE TABLE kart
+    (watchlist_id integer,
+    items_id integer PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    productId INTEGER,
+    FOREIGN KEY(watchlist_id) REFERENCES user_watchlists(watchlist_id),
+    FOREIGN KEY(username) REFERENCES users(username),
+    FOREIGN KEY(productId) REFERENCES products(productId)
+    )''')
+
 conn.commit()
 conn.close()
