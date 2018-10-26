@@ -174,6 +174,22 @@ def addToCart():
                                firstName=watchlistname, noOfItems=noOfItems, categoryDataM=categoryDataM,
                                categoryDataF=categoryDataF, itemData=itemData, tephigh=tephigh,
                                teplow=teplow)
+@app.route("/cart")
+def cart():
+    auth_user = session.get("username")
+    meg = request.args.get("name").split("_")
+    watchlistname = meg[0]
+    watchlistid = meg[1]
+    noOfItems = getnum(watchlistid)
+    with sqlite3.connect('user.db') as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT products.productId, products.name, products.price, products.image,kart.items_id FROM products, kart WHERE products.productId = kart.productId AND kart.watchlist_id = ? and kart.username=? ',[watchlistid,auth_user])
+        products = cur.fetchall()
+    totalPrice = 0
+    conn.close()
+    for row in products:
+        totalPrice += row[2]
+    return render_template("shopcart.html", products = products, totalPrice=totalPrice, loggedIn=True, firstName=watchlistname, noOfItems=noOfItems,watchlistname=watchlistname,watchlistid=watchlistid)
 
 @app.route("/account/profile/changePassword", methods=["GET", "POST"])
 def changePassword():
