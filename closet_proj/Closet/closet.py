@@ -148,6 +148,32 @@ def login():
               error = 'Incorrect username or password'
     return render_template('login.html', error=error)
 
+@app.route("/addToCart")
+def addToCart():
+        auth_user = session.get("username")
+        meg = request.args.get("name").split("_")
+        watchlistname = meg[0]
+        watchlistid = meg[1]
+        productId = meg[3]
+
+        with sqlite3.connect('user.db') as conn:
+            cur = conn.cursor()
+            try:
+                cur.execute("INSERT INTO kart (watchlist_id,username, productId) VALUES (?,?,?)", (watchlistid,auth_user, productId))
+                conn.commit()
+                msg = "Added successfully"
+            except:
+                conn.rollback()
+                msg = "Error occured"
+            cur = conn.cursor()
+        conn.close()
+        noOfItems = getnum(watchlistid)
+        [teplow, tephigh, itemData, categoryDataM, categoryDataF] = pushclo(auth_user, watchlistid)
+        itemData = parse(itemData)
+        return render_template('shoppingpage.html', watchlistname=watchlistname, watchlistid=watchlistid, loggedIn=True,
+                               firstName=watchlistname, noOfItems=noOfItems, categoryDataM=categoryDataM,
+                               categoryDataF=categoryDataF, itemData=itemData, tephigh=tephigh,
+                               teplow=teplow)
 
 @app.route("/account/profile/changePassword", methods=["GET", "POST"])
 def changePassword():
