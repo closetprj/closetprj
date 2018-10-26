@@ -149,6 +149,42 @@ def login():
     return render_template('login.html', error=error)
 
 
+@app.route("/account/profile/changePassword", methods=["GET", "POST"])
+def changePassword():
+    auth_user = session.get("username")
+    if request.method == "POST":
+        oldPassword = request.form['oldpassword']
+        oldPassword = hashlib.md5(oldPassword.encode()).hexdigest()
+        newPassword = request.form['newpassword']
+        newPassword = hashlib.md5(newPassword.encode()).hexdigest()
+        with sqlite3.connect('user.db') as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT password FROM users WHERE username = ? ",[auth_user])
+            password = cur.fetchone()[0]
+            if (password == oldPassword):
+                try:
+                    cur.execute("UPDATE users SET password = ? WHERE username = ?", (newPassword, auth_user))
+                    conn.commit()
+                    msg="Changed successfully"
+                except:
+                    conn.rollback()
+                    msg = "Failed"
+                return render_template("changePassword.html", msg=msg)
+            else:
+                msg = "Wrong password"
+        conn.close()
+        return render_template("changePassword.html", msg=msg)
+    else:
+        return render_template("changePassword.html")
+
+@app.route("/account/profile")
+def profileHome():
+    meg = request.args.get("name").split("_")
+    watchlistname = meg[0]
+    watchlistid = meg[1]
+    # loggedIn, firstName, noOfItems = getuserDetails(watchlistname,watchlistid)
+    return render_template("profileHome.html", watchlistname=watchlistname,watchlistid = watchlistid,loggedIn=True, firstName=watchlistname)
+
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
