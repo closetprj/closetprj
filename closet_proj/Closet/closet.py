@@ -201,7 +201,25 @@ def search():
     data = parse(data)
     num = getnum(watchlistid)
     return render_template('search.html', data=data, loggedIn=True, firstName=watchlistname, noOfItems=num,
+
                            searchName=keyword, watchlistid=watchlistid, watchlistname=watchlistname)
+
+@app.route("/account/profile/edit")
+def editProfile():
+    with sqlite3.connect('user.db') as conn:
+        meg = request.args.get("name").split("_")
+        watchlistname = meg[0]
+        watchlistid = meg[1]
+        print(watchlistname,watchlistid)
+        cur = conn.cursor()
+        cur.execute("SELECT email, firstName, lastName, address1,postcode, city,  phone FROM user_watchlists WHERE watchlist_id = ?",[watchlistid])
+        profileData = cur.fetchone()
+    # cur.execute("SELECT count(productId) FROM kart WHERE watchlist_id = " + str(profileData.watchlist_id))
+    # noOfItems = cur.fetchone()[0]
+    conn.close()
+    return render_template("editProfile.html", profileData=profileData, loggedIn=True, firstName=watchlistname,watchlistname=watchlistname,watchlistid=watchlistid)
+
+
 
 @app.route("/cart")
 def cart():
