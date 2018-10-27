@@ -53,6 +53,26 @@ conn.execute('''CREATE TABLE kart
     FOREIGN KEY(username) REFERENCES users(username),
     FOREIGN KEY(productId) REFERENCES products(productId)
     )''')
+conn.execute('''drop table if exists ordernum;''')
+conn.execute('''CREATE TABLE ordernum(
+    watchlist_id integer,
+    order_id integer PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    status text,
+    FOREIGN KEY(watchlist_id) REFERENCES user_watchlists(watchlist_id),
+    FOREIGN KEY(username) REFERENCES users(username)
+    )''')
 
+conn.execute('''drop table if exists state;''')
+conn.execute('''CREATE TABLE state
+    (watchlist_id integer,
+    username TEXT,
+    order_id integer,
+    productId INTEGER,
+    FOREIGN KEY(watchlist_id) REFERENCES user_watchlists(watchlist_id),
+    FOREIGN KEY(username) REFERENCES users(username),
+    FOREIGN KEY(productId) REFERENCES products(productId),
+    FOREIGN KEY(order_id) REFERENCES ordernum(order_id)
+    )''')
 conn.commit()
 conn.close()
