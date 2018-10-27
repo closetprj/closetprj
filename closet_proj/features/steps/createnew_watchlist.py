@@ -2,6 +2,10 @@ import re
 from login_utils import *
 from behave import *
 
+@Given(u'a user home page')
+def homepage(context):
+    context.browser.get(context.server_address)
+
 @when(u'she logs in and clicks My Lists')
 def see_add(context):
     add_found = context.browser.find_element_by_id("My lists")

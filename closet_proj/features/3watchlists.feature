@@ -1,4 +1,4 @@
-# Created by John at 17/10/18
+# Created by mingting at 17/10/18
 Feature: Dashboard Page
 
   Scenario: No Watchlists Initially
@@ -11,4 +11,4 @@ Feature: Dashboard Page
     When a user visits the login page
     And she logs in with username "admin" and password "default"
     Then she should see her list of watchlists
-#
+

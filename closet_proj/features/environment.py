@@ -3,7 +3,6 @@ from selenium import webdriver
 import Closet
 from Closet import app
 
-
 def before_all(context):
     context.server = Closet.closet
     context.thread = threading.Thread(target=context.server.test_server)

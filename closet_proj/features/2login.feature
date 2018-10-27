@@ -1,4 +1,4 @@
-# Created by yanqing and freeman at 17/10/18
+# Created by mingting and freeman at 17/10/18
 Feature: Login Page
   Scenario: Login
     Given a user visits the site

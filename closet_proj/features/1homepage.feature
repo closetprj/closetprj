@@ -1,4 +1,4 @@
-# Created by John at 12/10/18
+# Created by mingting at 12/10/18
 
 Feature: Home Page
 
