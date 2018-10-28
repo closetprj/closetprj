@@ -350,7 +350,7 @@ def myorder():
         with sqlite3.connect('user.db') as conn:
             cur = conn.cursor()
             cur.execute(
-                'SELECT ordernum.order_id FROM ordernum WHERE ordernum.watchlist_id = ? and ordernum.username= ? order by ordernum.order_id ',
+                'SELECT ordernum.order_id FROM ordernum WHERE ordernum.watchlist_id = ? and ordernum.username= ? order by ordernum.order_id  desc',
                 [watchlistid, auth_user])
             orderid = cur.fetchall()
         conn.close()

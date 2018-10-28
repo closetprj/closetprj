@@ -25,7 +25,7 @@
 		<button class="dropbtn">Hello, <br>{{firstName}}</button>
 		<div class="dropdown-content">
 			<a href="/account/orders?name={{watchlistname}}_{{watchlistid}}">Your orders</a>
-			<a action="{{ url_for('profileHome') }}" method=GET  href={{ url_for('profileHome') }}?name={{watchlistname}}_{{watchlistid}}>Your profile</a>c
+			<a action="{{ url_for('profileHome') }}" method=GET  href={{ url_for('profileHome') }}?name={{watchlistname}}_{{watchlistid}}>Your profile</a>
 			<hr>
 			<a href="/logout">Sign Out</a>
 		</div>

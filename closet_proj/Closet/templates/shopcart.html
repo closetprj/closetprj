@@ -41,7 +41,7 @@
 <div id="cartItems" >
 	<h2>Shopping Cart</h2>
     {% if error %}
-            <strong>{{ error }}</strong>
+           <script>alert("{{ error }}")</script>
     {% endif %}
 	<div id="tableItems">
 		{% for row in products %}
