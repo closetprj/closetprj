@@ -407,6 +407,10 @@ def removeFromCart():
                                firstName=watchlistname, noOfItems=noOfItems, watchlistname=watchlistname,
                                watchlistid=watchlistid)
 
+@app.route('/feedback',methods=['GET', 'POST'])
+def feedback():
+    return render_template("feedback.html")
+
 @app.route('/deletewatchlist', methods=['GET', 'POST'])
 def delete_watchlist():
     if not session['logged_in']:
